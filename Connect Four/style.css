@@ -1,0 +1,83 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font: size 10px;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(63, 94, 251);
+  background: radial-gradient(
+    circle,
+    rgba(63, 94, 251, 1) 20%,
+    rgba(70, 252, 144, 1) 100%
+  );
+}
+
+#gameScreen {
+  display: grid;
+  grid-template-columns: repeat(7, 100px);
+  grid-template-rows: repeat(6, 100px);
+  background-color: rgb(114, 114, 114);
+  box-shadow: 0 0 30px black;
+  border-radius: 30px;
+  width: 700px;
+  height: 600px;
+  justify-content: center;
+  align-content: center;
+  margin: 0 auto;
+}
+
+.cell {
+  border-radius: 50%;
+  background: white;
+  margin: 5px;
+}
+
+.cell:hover {
+  background-color: rgb(0, 174, 255);
+  cursor: pointer;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.occupied {
+  pointer-events: none;
+}
+
+.smallScreen {
+  width: 200px;
+  height: 80px;
+  background: red;
+  position: relative;
+  right: 2vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  font-family: Helvetica;
+  color: white;
+  background-color: rgb(114, 114, 114);
+  box-shadow: 0 0 20px black;
+}
+
+span {
+  font-weight: bold;
+  color: black;
+}
