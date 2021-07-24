@@ -19,29 +19,33 @@ window.onload = () => {
 
   // Cell constant variables
   const cells = Array.from(document.querySelectorAll('.cell'));
-  const containsRed = cell.classList.contains('red');
-  const containsYellow = cell.classList.contains('yellow');
+
+  // Cell set up
+  for (let i = 41; i >= 35; i--) {
+    cells[i].classList.add('available');
+  }
 
   // Cell filling system
   cells.forEach((cell) => {
     cell.addEventListener('click', (e) => {
       switch (player1Turn) {
         case true:
-          if (!containsRed && !containsYellow) {
-            let upperCell = cells.indexOf(e.target) + 7;
-            // console.log(upperCell);
-            if (upperCell > 41) {
+          if (cell.classList.contains('available')) {
+            let lowerCell = cells.indexOf(e.target) + 7;
+            if (lowerCell > 41) {
               e.target.classList.add('red');
               e.target.classList.add('occupied');
+              e.target.classList.add('spawnAnimation');
               currentPlayer.innerText = 'YELLOW';
               currentPlayer.style.color = 'yellow';
               player1Turn = false;
             } else if (
-              cells[upperCell].classList.contains('red') ||
-              cells[upperCell].classList.contains('yellow')
+              cells[lowerCell].classList.contains('red') ||
+              cells[lowerCell].classList.contains('yellow')
             ) {
               e.target.classList.add('red');
               e.target.classList.add('occupied');
+              e.target.classList.add('spawnAnimation');
               currentPlayer.innerText = 'YELLOW';
               currentPlayer.style.color = 'yellow';
               player1Turn = false;
@@ -49,14 +53,15 @@ window.onload = () => {
             counter = 0;
             matchCheck(e.target, 'red');
           }
+          cellAvailability(cells);
           break;
         case false:
-          if (!containsRed && !containsYellow) {
+          if (cell.classList.contains('available')) {
             let upperCell = cells.indexOf(e.target) + 7;
-            // console.log(upperCell);
             if (upperCell > 41) {
               e.target.classList.add('yellow');
               e.target.classList.add('occupied');
+              e.target.classList.add('spawnAimation');
               currentPlayer.innerText = 'RED';
               currentPlayer.style.color = 'red';
               player1Turn = true;
@@ -66,6 +71,7 @@ window.onload = () => {
             ) {
               e.target.classList.add('yellow');
               e.target.classList.add('occupied');
+              e.target.classList.add('spawnAnimation');
               currentPlayer.innerText = 'RED';
               currentPlayer.style.color = 'red';
               player1Turn = true;
@@ -73,10 +79,11 @@ window.onload = () => {
             counter = 0;
             matchCheck(e.target, 'yellow');
           }
+          cellAvailability(cells);
           break;
       }
+
       // Matches checking system
-      // Dodelaj svojo metodo, preveri od e.target če je celica enake barve sicer prekine operacijo in preveri v drugo smer.
       function matchCheck(target, turn) {
         let color = turn;
         let currentIndex = cells.indexOf(target);
@@ -91,10 +98,10 @@ window.onload = () => {
         console.log('Current row: ' + row);
         console.log('Current column: ' + column);
         // Check rows
-        for (let x = 0; x < 6; x++) {
+        for (let x = 0; x < 7; x++) {
           if (cells[7 * row + x].classList.contains(color)) {
             Xchain++;
-            MatchCondition(Xchain, Ychain);
+            MatchCondition(Xchain, Ychain, D1chain, D2chain, color);
           } else {
             Xchain = 0;
           }
@@ -104,21 +111,76 @@ window.onload = () => {
         for (let y = 0; y < 6; y++) {
           if (cells[column + y * 7].classList.contains(color)) {
             Ychain++;
-            MatchCondition(Xchain, Ychain);
+            MatchCondition(Xchain, Ychain, D1chain, D2chain, color);
           } else {
             Ychain = 0;
           }
         }
         console.log('Ychain: ' + Ychain);
         // Check n + 8 diagonal
+        for (let z = 0; z < 4; z++) {
+          if (
+            cells[currentIndex - z * 8] >= 0 &&
+            cells[currentIndex - z * 8].classList.contains(color)
+          ) {
+            D1chain++;
+            MatchCondition(Xchain, Ychain, D1chain, D2chain, color);
+          } else if (
+            cells[currentIndex + z * 8] <= 41 &&
+            cells[currentIndex + z * 8].classList.contains(color)
+          ) {
+            D1chain++;
+            MatchCondition(Xchain, Ychain, D1chain, D2chain, color);
+          } else {
+            // D1chain = 0;
+          }
+        }
+        console.log('D1chain: ' + D1chain);
         // Check n + 6 diagonal
+        for (let z = 0; z < 4; z++) {
+          if (
+            cells[currentIndex - z * 6] >= 0 &&
+            cells[currentIndex - z * 6].classList.contains(color)
+          ) {
+            D2chain++;
+            MatchCondition(Xchain, Ychain, D1chain, D2chain, color);
+            console.log(D2chain);
+          } else if (
+            cells[currentIndex + z * 6] <= 41 &&
+            cells[currentIndex + z * 6].classList.contains(color)
+          ) {
+            D2chain++;
+            MatchCondition(Xchain, Ychain, D1chain, D2chain, color);
+          } else {
+            // D2chain = 0;
+          }
+        }
+        console.log('D2chain: ' + D2chain);
       }
     });
   });
-  function MatchCondition(x, y) {
-    if (x > 3 || y > 3) {
+
+  // Cell availability
+  function cellAvailability(array) {
+    let available = [];
+    for (let i = 41; i >= 0; i--) {
+      if (
+        array[i].classList.contains('red') ||
+        array[i].classList.contains('yellow')
+      ) {
+        available.push(array[i - 7]);
+      }
+      available.forEach((cell) => {
+        cell.classList.add('available');
+        cell.classList.add('unrevealAnimation');
+      });
+    }
+  }
+
+  function MatchCondition(x, y, d1, d2, color) {
+    if (x > 3 || y > 3 || d1 > 3 || d2 > 3) {
       if (once === true) {
-        alert('GAME OVER');
+        alert(`GAME OVER! ${color} wins!`);
         once = false;
       }
     }
