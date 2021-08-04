@@ -1,6 +1,7 @@
 // Constant variables
 const gameScreen = document.getElementById('gameScreen');
 const currentPlayer = document.getElementById('currentPlayer');
+const soundEffect = document.getElementById('audio');
 // Non-constant variables
 let player1Turn = true;
 let counter = 0;
@@ -33,6 +34,7 @@ window.onload = () => {
           if (cell.classList.contains('available')) {
             let lowerCell = cells.indexOf(e.target) + 7;
             if (lowerCell > 41) {
+              soundEffect.cloneNode(true).play();
               e.target.classList.add('red');
               e.target.classList.add('occupied');
               e.target.classList.add('spawnAnimation');
@@ -43,6 +45,7 @@ window.onload = () => {
               cells[lowerCell].classList.contains('red') ||
               cells[lowerCell].classList.contains('yellow')
             ) {
+              soundEffect.cloneNode(true).play();
               e.target.classList.add('red');
               e.target.classList.add('occupied');
               e.target.classList.add('spawnAnimation');
@@ -59,6 +62,7 @@ window.onload = () => {
           if (cell.classList.contains('available')) {
             let upperCell = cells.indexOf(e.target) + 7;
             if (upperCell > 41) {
+              soundEffect.cloneNode(true).play();
               e.target.classList.add('yellow');
               e.target.classList.add('occupied');
               e.target.classList.add('spawnAimation');
@@ -69,6 +73,7 @@ window.onload = () => {
               cells[upperCell].classList.contains('red') ||
               cells[upperCell].classList.contains('yellow')
             ) {
+              soundEffect.cloneNode(true).play();
               e.target.classList.add('yellow');
               e.target.classList.add('occupied');
               e.target.classList.add('spawnAnimation');
@@ -180,8 +185,11 @@ window.onload = () => {
   function MatchCondition(x, y, d1, d2, color) {
     if (x > 3 || y > 3 || d1 > 3 || d2 > 3) {
       if (once === true) {
-        alert(`GAME OVER! ${color} wins!`);
+        alert(
+          `GAME OVER! ${color} wins! \n The page will self-reload after you click OK button.`
+        );
         once = false;
+        location.reload();
       }
     }
   }
